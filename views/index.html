@@ -19,16 +19,16 @@
     <div hx-get="/books" hx-trigger="click" hx-target="#page-content" class="p-pointer">
       <span style="padding: 8px 0px; display: block;">Books</span>
     </div>
-    <div hx-get="/authors" hx-trigger="click" class="p-pointer">
+    <div hx-get="/authors" hx-trigger="click" hx-target="#page-content" class="p-pointer">
       <span style="padding: 8px 0px; display: block;">Authors</span>
     </div>
-    <div hx-get="/years" hx-trigger="click" class="p-pointer">
+    <div hx-get="/years" hx-trigger="click" hx-target="#page-content" class="p-pointer">
       <span style="padding: 8px 0px; display: block;">Years</span>
     </div>
     <div hx-get="/search" hx-trigger="click" hx-target="#page-content" class="p-pointer">
       <span style="padding: 8px 0px; display: block;">Search</span>
     </div>
-    <div hx-get="/create" hx-trigger="click" class="p-pointer">
+    <div hx-get="/create" hx-trigger="click" hx-target="#page-content" class="p-pointer">
       <span style="padding: 8px 0px; display: block;">Create</span>
     </div>
   </div>
@@ -70,13 +70,45 @@
     <th>Author</th>
     <th>ISBN</th>
     <th>Pages</th>
+    <th>Options</th>
   </tr>
   {{ range . }}
-  <tr id="row-{{ .ID }}">
-    <th> {{ .BookName }} </th>
-    <th> {{ .BookAuthor }} </th>
-    <th> {{ .BookISBN }} </th>
-    <th> {{ .BookPages }} </th>
+  <tr id="row-{{ .id }}">
+    <th> {{ .name }} </th>
+    <th> {{ .author }} </th>
+    <th> {{ .isbn }} </th>
+    <th> {{ .pages }} </th>
+    <th>
+      <button hx-get="/edit/{{ .id }}" hx-target="#page-content" class="btn">Edit</button>
+      <button hx-delete="/api/books/{{ .id }}" hx-target="#page-content" class="btn">Delete</button>
+    </th>
+  </tr>
+  {{ end }}
+</table>
+{{ end }}
+
+{{ block "author-table" . }}
+<table>
+  <tr>
+    <th>Author</th>
+  </tr>
+  {{ range . }}
+  <tr id="row-{{ .id }}">
+    <th> {{ .author }} </th>
+  </tr>
+  {{ end }}
+</table>
+{{ end }}
+
+
+{{ block "year-table" . }}
+<table>
+  <tr>
+    <th>Years</th>
+  </tr>
+  {{ range . }}
+  <tr id="row-{{ .id }}">
+    <th> {{ .year }} </th>
   </tr>
   {{ end }}
 </table>
@@ -88,4 +120,64 @@
   <input type="text" required />
   <label>Search parameter</label>
 </div>
+{{ end }}
+
+
+{{ block "create-book" . }}
+
+<form hx-post="/api/books">
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="name" required />
+    <label>Name</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="author" required />
+    <label>Author</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="pages" required />
+    <label>Pages</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="year" required />
+    <label>Year</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="isbn" required />
+    <label>ISBN</label>
+  </div>
+  <button type="submit" class="btn">Add Book</button>
+</form>
+
+{{ end }}
+
+
+{{ block "edit-book" . }}
+
+<form hx-put="/api/books">
+  <input type="hidden" name="id" value="{{ .ID }}" />
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="name" value="{{ .BookName }}" required />
+    <label>Name</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="author" value="{{ .BookAuthor }}" required />
+    <label>Author</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="pages" value="{{ .BookPages }}" required />
+    <label>Pages</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="year" value="{{ .BookYear }}" required />
+    <label>Year</label>
+  </div>
+  <div class="input_wrap" style="margin-bottom: 5px;">
+    <input type="text" name="isbn" value="{{ .BookISBN }}" required />
+    <label>ISBN</label>
+  </div>
+
+  <button type="submit" class="btn">Update Book</button>
+</form>
+
 {{ end }}
