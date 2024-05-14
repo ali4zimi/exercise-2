@@ -24,11 +24,11 @@ import (
 // frontend or the database
 type BookStore struct {
 	ID         primitive.ObjectID `bson:"_id,omitempty"`
-	BookName   string
-	BookAuthor string
-	BookISBN   string
-	BookPages  int
-	BookYear   int
+	BookName   string             `json:"name"`
+	BookAuthor string             `json:"author"`
+	BookISBN   string             `json:"isbn"`
+	BookPages  int                `json:"pages"`
+	BookYear   int                `json:"year"`
 }
 
 // Wraps the "Template" struct to associate a necessary method
@@ -163,11 +163,12 @@ func findAllBooks(coll *mongo.Collection) []map[string]interface{} {
 	var ret []map[string]interface{}
 	for _, res := range results {
 		ret = append(ret, map[string]interface{}{
-			"ID":         res.ID.Hex(),
-			"BookName":   res.BookName,
-			"BookAuthor": res.BookAuthor,
-			"BookISBN":   res.BookISBN,
-			"BookPages":  res.BookPages,
+			"id":     res.ID.Hex(),
+			"name":   res.BookName,
+			"author": res.BookAuthor,
+			"isbn":   res.BookISBN,
+			"pages":  res.BookPages,
+			"year":   res.BookYear,
 		})
 	}
 
@@ -223,7 +224,7 @@ func main() {
 
 	// You can use such name for the database and collection, or come up with
 	// one by yourself!
-	coll, err := prepareDatabase(client, "exercise-2", "information")
+	coll, err := prepareDatabase(client, "exercise-1", "information")
 
 	prepareData(client, coll)
 
