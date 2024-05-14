@@ -12,6 +12,8 @@ RUN go mod tidy
 
 RUN go build -o main ./cmd/main.go
 
+EXPOSE 3030
+
 CMD ["/app/main"]
 
 
